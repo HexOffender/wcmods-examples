@@ -1,0 +1,49 @@
+{
+  "_help": "Each role's size range for newly generated cats, wider than the game's own so cats vary more.",
+  "NPC/CatSize.csv": {
+    "1": {
+      "MinScale": "0.1",
+      "MaxScale": "0.15"
+    },
+    "2": {
+      "MinScale": "0.38",
+      "MaxScale": "0.52"
+    },
+    "3": {
+      "MinScale": "0.6",
+      "MaxScale": "0.8"
+    },
+    "4": {
+      "MinScale": "0.62",
+      "MaxScale": "0.88"
+    },
+    "5": {
+      "MinScale": "0.62",
+      "MaxScale": "0.85"
+    },
+    "6": {
+      "MinScale": "0.64",
+      "MaxScale": "0.86"
+    },
+    "7": {
+      "MinScale": "0.66",
+      "MaxScale": "0.88"
+    },
+    "8": {
+      "MinScale": "0.9",
+      "MaxScale": "1"
+    },
+    "9": {
+      "MinScale": "0.85",
+      "MaxScale": "1"
+    },
+    "10": {
+      "MinScale": "0.6",
+      "MaxScale": "0.9"
+    },
+    "11": {
+      "MinScale": "0.9",
+      "MaxScale": "1"
+    }
+  }
+}
