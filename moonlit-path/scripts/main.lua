@@ -10,14 +10,16 @@ local P = S.progress
 
 local TALK_RANGE, WALK_AWAY, LABEL_RANGE = 300, 600, 2000   -- cm
 local giver, talking, lines       -- talking: the line being said, of `lines`
-local doneAt                      -- when the quest was finished, for the panel's last word
 
 local function step() return S.steps[P.step] end
 local function finished() return P.step > #S.steps end
 
+local report   -- tells the mod menu's Quests page where you are (below)
+
 local function save()
     local ok, why = MOD.save()
     if not ok then MOD.log("progress not kept: %s", tostring(why)) end
+    report()
 end
 
 -- On to the next step, with the reward if this one gives one (dropped at your paws, to pick up).
@@ -30,7 +32,6 @@ local function advance()
     end
     MOD.log("done: %s", s.text)
     P.step, P.counts = P.step + 1, {}
-    if finished() then doneAt = os.clock() end
     save()
 end
 
@@ -109,8 +110,14 @@ Game.every(0.5, function()
 end)
 
 -- Talking: on a talk step the giver says its lines, and the step is done after the last; otherwise
--- they remind you what's next.
+-- they remind you what's next. Once the quest is done, the same key away from the giver puts the
+-- quest panel away for good (Start over brings it back).
 Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function()
+    if finished() and not P.dismissed and not talking and not (giver and giver:near(TALK_RANGE)) then
+        P.dismissed = true
+        save()
+        return
+    end
     if not giver then return end
     if talking then
         talking = talking + 1
@@ -153,6 +160,17 @@ local function collectText(s)
     return table.concat(parts, ", ")
 end
 
+-- The mod menu's Quests page lists the quest with the game's (Game.quests.report, from wcmods 2026-10-25).
+report = function()
+    if not Game.quests.report then return end
+    local s = step()
+    Game.quests.report(MOD.id, {
+        title = S.title, status = s and "active" or "done", by = MOD.name, objective = s and s.text or "",
+        progress = s and (s.collect and collectText(s) or string.format("step %d of %d", P.step, #S.steps)) or "",
+    })
+end
+report()
+
 Draw.onFrame(function(d)
     if not d.view or not Game.player() then return end
     if #Game.screens() > 0 then talking = nil return end
@@ -176,10 +194,13 @@ Draw.onFrame(function(d)
         end
     end
 
-    -- The quest: a panel at the top right, and a marker on where to go.
+    -- The quest: a panel at the top right and a marker on where to go, unless they've been put away.
+    local hidden = S.show_panel == false or (not s and P.dismissed)
     local px, pw = d.width - 400, 380
-    local py = d.panel(px, 150, pw, 86, S.title)
-    if s then
+    local py = not hidden and d.panel(px, 150, pw, 86, S.title)
+    if hidden then
+        -- the mod menu's page shows them again
+    elseif s then
         local detail = s.collect and collectText(s) or string.format("Step %d of %d", P.step, #S.steps)
         d.text(px + 14, py, s.text, { size = 16, color = "#ffe9a8" })
         d.text(px + 14, py + 24, detail, { size = 13, color = "#ffffffb0" })
@@ -187,10 +208,9 @@ Draw.onFrame(function(d)
         if to and not talking then
             d.marker({ X = to.X, Y = to.Y, Z = to.Z + 60 }, s.talk and G.name or s.text, { edge = true, color = "#ffd166" })
         end
-    elseif doneAt and os.clock() - doneAt < 30 then
-        d.text(px + 14, py, "Quest complete!", { size = 16, color = "#9ef0a0" })
     else
-        d.text(px + 14, py, "Complete. The mod menu's page starts it over.", { size = 13, color = "#ffffffb0" })
+        d.text(px + 14, py, "Quest complete!", { size = 16, color = "#9ef0a0" })
+        d.text(px + 14, py + 24, (S.talk_key or "T") .. "   Dismiss", { size = 13, color = "#ffffffb0" })
     end
 
     -- What the giver says, in a box at the bottom.
@@ -217,9 +237,18 @@ MOD.page(function(ui)
         ui.text("Complete.")
     end
     ui.progress("Steps", math.min(P.step - 1, #S.steps) / #S.steps, { format = string.format("%d of %d", math.min(P.step - 1, #S.steps), #S.steps) })
+    local show = ui.switch("Show the quest panel", S.show_panel ~= false)
+    if show ~= (S.show_panel ~= false) then
+        S.show_panel = show
+        save()
+    end
+    if not s and P.dismissed and ui.button("Show the finished quest again") then
+        P.dismissed = false
+        save()
+    end
     ui.space(8)
     if ui.button("Start over", { kind = "danger" }) then
-        P.step, P.counts, talking, doneAt = 1, {}, nil, nil
+        P.step, P.counts, P.dismissed, talking = 1, {}, false, nil
         save()
     end
     if giver and ui.button("Bring " .. G.name .. " here") then placeGiver() end
