@@ -1,12 +1,12 @@
 {
-  "_help": "New items (wcmods docs/SDK.md, 'New items'). 'like' borrows what a game item does, its icon and its badge; 'recipe' is what the medicine cat wants for one; 'give' is how many you start with, given once. 'recipes' changes what the game's own herbs and accessories cost (accessories can't be new yet: they need art of their own).",
+  "_help": "New items (wcmods docs/SDK.md, 'New items'). 'like' borrows what a game item does, its icon and its badge; 'icon' and an accessory's 'texture' are recolours of the game's own pictures, made from your game files at install; 'recipe' is what the medicine cat wants for one; 'give' is how many you start with, given once. 'recipes' changes what the game's own herbs and accessories cost.",
   "items": [
     {
       "id": "Moonstone",
       "kind": "material",
       "name": "Moonstone",
       "description": "A pale stone that glows at night.",
-      "icon": "Rock",
+      "icon": { "from": "Rock", "tint": "#c4d4ff", "brightness": 1.15 },
       "rarity": "Rare",
       "give": 3
     },
@@ -15,6 +15,7 @@
       "like": "MediumHealingHerb",
       "name": "Moon Herb",
       "description": "Health Recovery (medium). Picked under a full moon.",
+      "icon": { "tint": "#b8c8ff", "brightness": 1.1 },
       "rarity": "Uncommon",
       "recipe": { "Dandelion": 2, "Moonstone": 1 },
       "give": 2
@@ -24,8 +25,19 @@
       "like": "CatnipPouch",
       "name": "Starlight Pouch",
       "description": "Stamina Recovery for your whole team, in a fight.",
+      "icon": { "hue": 180, "saturation": 0.7 },
       "rarity": "Rare",
       "recipe": { "Heather": 2, "Moonstone": 1 }
+    },
+    {
+      "id": "MoonlitCollar",
+      "like": "Neck.DogCollar.1",
+      "name": "Moonlit Collar",
+      "description": "A collar the colour of moonlight on water.",
+      "texture": { "tint": "#a8c4ff" },
+      "icon": { "tint": "#a8c4ff" },
+      "rarity": "Rare",
+      "recipe": { "Bone": 1, "Moonstone": 2 }
     }
   ],
   "recipes": {

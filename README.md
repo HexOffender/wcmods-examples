@@ -28,7 +28,7 @@ up" installs.
 | `example-controls` | Example key remaps (Interact on F, Scent tracking on Tab...) |
 | `double-xp` | Doubles the experience every fight gives |
 | `npc-size-variety` | A wider size range for newly generated Clan cats (`data.json` cell edits) |
-| `moonlit-herbs` | New items (`items.json`): a Moon Herb and a Starlight Pouch to barter for at the medicine cat, made with a new material, Moonstone, which the Moss Patch accessory now takes too. Needs the Oodle DLL and a wcmods with `items.json` |
+| `moonlit-herbs` | New items (`items.json`): a Moon Herb and a Starlight Pouch to barter for at the medicine cat, made with a new material, Moonstone, which the Moss Patch accessory now takes too, and a Moonlit Collar, a new look for the Dog Collar. Their icons and the collar's look are the game's own recoloured at install. Needs the Oodle DLL and a wcmods with `items.json` |
 | `game-tweaks` | An in-game script with live settings on its page in the mod menu: full stamina, hold the time of day, keep the fresh-kill pile up, heal on a key |
 | `faster-run` | A mod with its own build step (`section.py`) and studio page (`studio/section.js`) |
 | `quest-markers` | A custom quest drawn on screen, markers on nearby pickups and a debug panel |
