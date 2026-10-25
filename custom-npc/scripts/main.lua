@@ -16,17 +16,29 @@ local function spawn(at, level)
     })
 end
 
--- Where they stand: settings.json's "at", or (the first time) beside your cat, remembered there.
+-- Where they stand: settings.json's "at", or (the first time) beside your cat, remembered there. F8 moves
+-- them to where you stand. The same cat moves (a new one would get new patterns from the game), unless
+-- it's in another level.
 local function place(here)
     local me = Game.cat()
     if not me then return end
-    local l = me:location()
-    local yaw = 0
-    pcall(function() yaw = me.actor:K2_GetActorRotation().Yaw end)
-    local at = here and { l.X, l.Y, l.Z } or
-        { l.X + math.cos(math.rad(yaw + 60)) * 200, l.Y + math.sin(math.rad(yaw + 60)) * 200, l.Z }
-    S.at, S.level, S.yaw = { math.floor(at[1]), math.floor(at[2]), math.floor(at[3]) }, Game.levelName(), yaw + 180
-    spawn(S.at, S.level)
+    local at, yaw
+    if here then
+        local l = me:location()
+        at, yaw = { X = l.X, Y = l.Y, Z = l.Z }, 0
+        pcall(function() yaw = me.actor:K2_GetActorRotation().Yaw + 180 end)
+    else
+        at, yaw = Game.npcs.spot(200, 60)
+        if not at then return end
+    end
+    S.at, S.level, S.yaw = { math.floor(at.X), math.floor(at.Y), math.floor(at.Z) }, Game.levelName(), yaw
+    if npc and npc.level == S.level then
+        local r = math.rad(yaw)
+        npc:moveTo(S.at)
+        npc:face({ X = S.at[1] + math.cos(r) * 100, Y = S.at[2] + math.sin(r) * 100, Z = S.at[3] })
+    else
+        spawn(S.at, S.level)
+    end
     local ok, why = MOD.save()
     MOD.log("%s is at %d, %d, %d in %s%s", S.name, S.at[1], S.at[2], S.at[3], S.level,
         ok and "" or (" (not saved: " .. tostring(why) .. ")"))
