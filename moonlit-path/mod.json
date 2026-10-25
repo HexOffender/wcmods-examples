@@ -1,0 +1,11 @@
+{
+  "name": "The Moonlit Path",
+  "description": "An example questline: Brindlemoon, a cat of the mod's own, asks you to gather moss, visit your Clan's medicine cat and come back, for a reward. Steps on screen, a marker to follow, progress kept between sessions and a page in the mod menu.",
+  "version": "1.0",
+  "author": "wcmods",
+  "uses": [
+    "mod-menu"
+  ],
+  "enabled": true,
+  "priority": 0
+}
