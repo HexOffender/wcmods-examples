@@ -127,12 +127,36 @@ Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function
             if s and s.talk and lines == s.talk then advance() end
         end
     elseif giver:near(TALK_RANGE) then
+        -- Another mod's cat may be talking already (two in reach hear the same key).
+        if Game.dialogue and not Game.dialogue.claim() then return end
         local s = step()
         lines = s and s.talk or { finished() and "Thank you again, young one." or ("Have you done it yet? " .. s.text .. ".") }
         talking = 1
         giver:face()
     end
 end, "Talk to " .. G.name)
+
+-- Enter too, while talking: it's the key the game's dialogue box shows.
+Game.onPress("Enter", function()
+    if not talking then return end
+    talking = talking + 1
+    if talking > #lines then
+        talking = nil
+        local s = step()
+        if s and s.talk and lines == s.talk then advance() end
+    end
+end)
+-- What's being said goes in the game's own dialogue box (Game.dialogue, from wcmods 2026-10-25); speak(nil)
+-- puts it away. False when there's no box, and the script draws its own.
+local function otherTalking() return Game.dialogue ~= nil and Game.dialogue.busy() end   -- another mod's cat
+local function speak(name, line)
+    if not Game.dialogue then return false end
+    if not line then
+        Game.dialogue.hide()
+        return true
+    end
+    return (Game.dialogue.say(name, line))
+end
 
 -- ------------------------------------------------------------------------------- on screen
 local function wrap(d, text, size, width)
@@ -172,8 +196,8 @@ end
 report()
 
 Draw.onFrame(function(d)
-    if not d.view or not Game.player() then return end
-    if #Game.screens() > 0 then talking = nil return end
+    if not d.view or not Game.player() then speak(nil) return end
+    if #Game.screens() > 0 then talking = nil speak(nil) return end
     local s = step()
     local away = giver and giver:valid() and giver:distance()
     if talking and (not away or away > WALK_AWAY) then talking = nil end
@@ -185,10 +209,10 @@ Draw.onFrame(function(d)
         if x then
             d.text(x, y - 18, G.title or "", { size = 14, color = "#a8e6a1", align = "center", valign = "bottom" })
             d.text(x, y, G.name, { size = 20, color = "#ffffff", align = "center", valign = "bottom" })
-            if s and s.talk and not talking then
+            if s and s.talk and not talking and not otherTalking() then
                 d.text(x, y - 40, "!", { size = 30, color = "#ffd166", align = "center", valign = "bottom" })
             end
-            if not talking and away <= TALK_RANGE then
+            if not talking and away <= TALK_RANGE and not otherTalking() then
                 d.text(x, y + 28, (S.talk_key or "T") .. "   Talk", { size = 16, color = "#ffe9a8", align = "center" })
             end
         end
@@ -213,7 +237,8 @@ Draw.onFrame(function(d)
         d.text(px + 14, py + 24, (S.talk_key or "T") .. "   Dismiss", { size = 13, color = "#ffffffb0" })
     end
 
-    -- What the giver says, in a box at the bottom.
+    -- What the giver says: in the game's dialogue box, or a box of the script's own.
+    if speak(G.name, talking and lines[talking]) then return end
     if talking then
         local w = math.min(760, d.width - 80)
         local x = (d.width - w) / 2

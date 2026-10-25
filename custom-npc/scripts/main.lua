@@ -58,11 +58,32 @@ Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function
         talking = talking + 1
         if talking > #S.lines then talking = nil end
     elseif npc:near(TALK_RANGE) and #S.lines > 0 then
+        -- Another mod's cat may be talking already (two in reach hear the same key).
+        if Game.dialogue and not Game.dialogue.claim() then return end
         talking = 1
         npc:face()
     end
 end, "Talk to " .. S.name)
+-- Enter too, while talking: it's the key the game's dialogue box shows.
+Game.onPress("Enter", function()
+    if not talking then return end
+    talking = talking + 1
+    if talking > #S.lines then talking = nil end
+end)
 Game.onPress(S.move_key or "F8", function() place(true) end, "Move " .. S.name .. " to where you stand")
+
+-- What's being said goes in the game's own dialogue box (Game.dialogue, from wcmods 2026-10-25); speak(nil)
+-- puts it away. False when there's no box, and the script draws its own.
+local function otherTalking() return Game.dialogue ~= nil and Game.dialogue.busy() end   -- another mod's cat
+local function speak(name, line)
+    if not Game.dialogue then return false end
+    if not line then
+        Game.dialogue.hide()
+        return true
+    end
+    return (Game.dialogue.say(name, line))
+end
+
 
 -- Text broken into lines that fit `width` pixels.
 local function wrap(d, text, size, width)
@@ -81,8 +102,8 @@ local function wrap(d, text, size, width)
 end
 
 Draw.onFrame(function(d)
-    if not npc or not npc:valid() or not d.view then return end
-    if #Game.screens() > 0 then talking = nil return end       -- the map, the inventory, the pause menu
+    if not npc or not npc:valid() or not d.view then talking = nil speak(nil) return end
+    if #Game.screens() > 0 then talking = nil speak(nil) return end   -- the map, the inventory, the pause menu
     local away = npc:distance()
     if not away then return end
     if talking and away > WALK_AWAY then talking = nil end
@@ -95,13 +116,14 @@ Draw.onFrame(function(d)
         if x then
             d.text(x, y - 18, S.title or "", { size = 14, color = "#a8e6a1", align = "center", valign = "bottom" })
             d.text(x, y, S.name, { size = 20, color = "#ffffff", align = "center", valign = "bottom" })
-            if not talking and away <= TALK_RANGE then
+            if not talking and away <= TALK_RANGE and not otherTalking() then
                 d.text(x, y + 28, (S.talk_key or "T") .. "   Talk", { size = 16, color = "#ffe9a8", align = "center" })
             end
         end
     end
 
-    -- What they're saying, in a box at the bottom of the screen.
+    -- What they're saying: in the game's dialogue box, or a box of the script's own.
+    if speak(S.name, talking and S.lines[talking]) then return end
     if talking then
         local w = math.min(760, d.width - 80)
         local x = (d.width - w) / 2
