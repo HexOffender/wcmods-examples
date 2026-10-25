@@ -1,0 +1,52 @@
+{
+  "_help": "A questline (scripts/main.lua). The giver is a cat of the mod's own (Game.npcs): empty 'at', they turn up beside you the first time. Steps, in order: 'talk' (lines the giver says), 'collect' (items to pick up from then on, by tag), 'visit' (an actor class to go to, e.g. the medicine cat, or 'at': [x, y, z]). The last step's 'reward' is dropped at your paws. 'progress' is where you are; the quest's page in the mod menu can start it over.",
+  "title": "The Moonlit Path",
+  "giver": {
+    "name": "Brindlemoon",
+    "title": "Elder of the old moor",
+    "fur": "#7a5a3c",
+    "pattern": "#3b2a1c",
+    "markings": "#e8dcc8",
+    "nose": "#b07a6a",
+    "paws": "#c99a8a",
+    "eyes": 4,
+    "size": 0.95,
+    "at": []
+  },
+  "steps": [
+    {
+      "text": "Talk to Brindlemoon",
+      "talk": [
+        "Ah, a young cat with keen eyes. Will you help an old elder?",
+        "My bones ache in the cold. Bring me moss for my nest, and I'll tell you a secret."
+      ]
+    },
+    {
+      "text": "Gather moss",
+      "collect": { "Gameplay.Inventory.Materials.Moss": 2 }
+    },
+    {
+      "text": "Bring the moss to Brindlemoon",
+      "talk": [
+        "Soft as a kit's fur. Thank you.",
+        "Now, the secret: some herbs open only under the moon. Ask your Clan's medicine cat what they know."
+      ]
+    },
+    {
+      "text": "Visit your medicine cat",
+      "visit": "BP_Quest_Giver_Bartering_C",
+      "radius": 500
+    },
+    {
+      "text": "Tell Brindlemoon what you learned",
+      "talk": [
+        "So the medicine cat knows of them too. Then the old stories are true.",
+        "Take these, young one, for your kindness. May StarClan light your path."
+      ],
+      "reward": { "Gameplay.Inventory.Consumable.BigHealingHerb": 2, "Gameplay.Inventory.Materials.Dandelion": 3 }
+    }
+  ],
+  "talk_key": "T",
+  "talk_button": "Gamepad_DPad_Up",
+  "progress": { "step": 1, "counts": {} }
+}

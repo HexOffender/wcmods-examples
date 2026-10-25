@@ -12,8 +12,9 @@ in-game mod menu. These are separate mods: use them as they are, or start your o
 - **Command line:** `python wcmods.py add path/to/wcmods-examples/palette-dark-forest`, one folder
   at a time.
 
-The three that run code (Game Tweaks, Faster Movement and Quest Markers) stay off until you allow
-mods that run code (Options, on the Mods page). Most others need UE4SS, which the studio's "Get set
+The ones that run code (Game Tweaks, Faster Movement, Quest Markers, Mistwhisker and The Moonlit Path)
+stay off until you allow mods that run code (Options, on the Mods page). Moonlit Herbs, Mistwhisker and The Moonlit Path
+need a wcmods from October 2026 or later (`items.json`, and `Game.npcs` for cats of a mod's own). Most others need UE4SS, which the studio's "Get set
 up" installs.
 
 ## The examples
@@ -27,9 +28,12 @@ up" installs.
 | `example-controls` | Example key remaps (Interact on F, Scent tracking on Tab...) |
 | `double-xp` | Doubles the experience every fight gives |
 | `npc-size-variety` | A wider size range for newly generated Clan cats (`data.json` cell edits) |
+| `moonlit-herbs` | New items (`items.json`): a Moon Herb and a Starlight Pouch to barter for at the medicine cat, made with a new material, Moonstone, which the Moss Patch accessory now takes too. Needs the Oodle DLL and a wcmods with `items.json` |
 | `game-tweaks` | An in-game script with live settings on its page in the mod menu: full stamina, hold the time of day, keep the fresh-kill pile up, heal on a key |
 | `faster-run` | A mod with its own build step (`section.py`) and studio page (`studio/section.js`) |
 | `quest-markers` | A custom quest drawn on screen, markers on nearby pickups and a debug panel |
+| `custom-npc` | Mistwhisker, a cat of your own: their own colours, a name over their head and lines to say when you talk to them (T, or up on the d-pad). The first time, they turn up beside you; F8 moves them |
+| `moonlit-path` | A questline: Brindlemoon asks you to gather moss, visit your Clan's medicine cat and come back, for a reward. Steps on screen, a marker to follow, progress kept between sessions and a page in the mod menu |
 
 How each kind of file works is in wcmods'
 [README](https://github.com/HexOffender/warrior-cats-mods#file-formats) and
@@ -44,7 +48,7 @@ updated here, or until you choose to use one anyway on that build.
 ## No game files
 
 These mods change the game only through wcmods' own formats: palettes, `data.json` cell edits,
-controls and scripts. None of them contains the game's files or code.
+`items.json`, controls and scripts. None of them contains the game's files or code.
 
 The palettes are generated from the game's colours by `tools/make_palettes.py` in wcmods, run on a
 computer with the game:

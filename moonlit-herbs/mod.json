@@ -1,0 +1,8 @@
+{
+  "name": "Moonlit Herbs",
+  "description": "An example of new items: a Moon Herb and a Starlight Pouch to barter for at the medicine cat, both made with a new material, Moonstone. The Moss Patch accessory takes a Moonstone too.",
+  "version": "1.0",
+  "author": "wcmods",
+  "enabled": true,
+  "priority": 0
+}

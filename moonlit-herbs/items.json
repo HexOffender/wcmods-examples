@@ -1,0 +1,34 @@
+{
+  "_help": "New items (wcmods docs/SDK.md, 'New items'). 'like' borrows what a game item does, its icon and its badge; 'recipe' is what the medicine cat wants for one; 'give' is how many you start with, given once. 'recipes' changes what the game's own herbs and accessories cost (accessories can't be new yet: they need art of their own).",
+  "items": [
+    {
+      "id": "Moonstone",
+      "kind": "material",
+      "name": "Moonstone",
+      "description": "A pale stone that glows at night.",
+      "icon": "Rock",
+      "rarity": "Rare",
+      "give": 3
+    },
+    {
+      "id": "MoonHerb",
+      "like": "MediumHealingHerb",
+      "name": "Moon Herb",
+      "description": "Health Recovery (medium). Picked under a full moon.",
+      "rarity": "Uncommon",
+      "recipe": { "Dandelion": 2, "Moonstone": 1 },
+      "give": 2
+    },
+    {
+      "id": "StarlightPouch",
+      "like": "CatnipPouch",
+      "name": "Starlight Pouch",
+      "description": "Stamina Recovery for your whole team, in a fight.",
+      "rarity": "Rare",
+      "recipe": { "Heather": 2, "Moonstone": 1 }
+    }
+  ],
+  "recipes": {
+    "Cosmetic.Head.MossPatch.1": { "Moss": 3, "Ivy": 1, "Moonstone": 1 }
+  }
+}

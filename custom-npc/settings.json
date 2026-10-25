@@ -1,0 +1,21 @@
+{
+  "_help": "Mistwhisker, a cat of your own (WCModsGame's Game.npcs). Colours are #rrggbb; eyes is an iris colour slot (0-24); size is the game's cat size (about 0.4 to 1.1). 'at' is where they stand: empty, they turn up beside you the first time, and the move key puts them where you stand (both remembered here). Walk up and press the talk key, or the talk button on a controller, to hear what they say.",
+  "name": "Mistwhisker",
+  "title": "Wandering healer",
+  "fur": "#8c919e",
+  "pattern": "#3a3d47",
+  "markings": "#f2f2f7",
+  "nose": "#c98a92",
+  "paws": "#d9a0a8",
+  "eyes": 15,
+  "size": 0.85,
+  "lines": [
+    "Greetings, young one. I walk between the Clans, healing those who ask.",
+    "The forest has more herbs than any medicine cat knows. Some only open under the moon.",
+    "If you find a pale stone that glows at night, bring it to your medicine cat. Safe paths, friend."
+  ],
+  "talk_key": "T",
+  "talk_button": "Gamepad_DPad_Up",
+  "move_key": "F8",
+  "at": []
+}

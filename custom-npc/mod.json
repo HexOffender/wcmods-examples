@@ -1,0 +1,11 @@
+{
+  "name": "Mistwhisker",
+  "description": "An example of a cat of your own: Mistwhisker, a wandering healer with their own colours, a name over their head and something to say when you talk to them. The first time, they turn up beside you; F8 moves them to where you stand.",
+  "version": "1.0",
+  "author": "wcmods",
+  "uses": [
+    "mod-menu"
+  ],
+  "enabled": true,
+  "priority": 0
+}
