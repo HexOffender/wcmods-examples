@@ -43,16 +43,21 @@ local function spawnGiver()
     })
 end
 
--- The first time, the giver turns up beside your cat; where is kept in settings.json.
+-- The first time, the giver turns up beside your cat, where there's room; where is kept in settings.json.
+-- Bringing them again moves the same cat (a new one would get new patterns from the game), unless it's
+-- in another level.
 local function placeGiver()
-    local me = Game.cat()
-    if not me then return end
-    local l, yaw = me:location(), 0
-    pcall(function() yaw = me.actor:K2_GetActorRotation().Yaw end)
-    G.at = { math.floor(l.X + math.cos(math.rad(yaw - 60)) * 220), math.floor(l.Y + math.sin(math.rad(yaw - 60)) * 220),
-             math.floor(l.Z) }
-    G.level, G.yaw = Game.levelName(), yaw + 180
-    spawnGiver()
+    local at, yaw = Game.npcs.spot(220, -60)
+    if not at then return end
+    G.at = { math.floor(at.X), math.floor(at.Y), math.floor(at.Z) }
+    G.level, G.yaw = Game.levelName(), yaw
+    if giver and giver.level == G.level then
+        giver.yaw = yaw
+        giver:moveTo(G.at)
+        giver:face()
+    else
+        spawnGiver()
+    end
     save()
     MOD.log("%s is at %d, %d, %d in %s", G.name, G.at[1], G.at[2], G.at[3], G.level)
 end
