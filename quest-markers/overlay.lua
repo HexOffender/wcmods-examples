@@ -1,4 +1,4 @@
--- Quest Markers (examples/quest-markers): a custom quest on screen, markers on nearby pickups and a
+-- Quest Markers (wcmods-examples/quest-markers): a custom quest on screen, markers on nearby pickups and a
 -- debug panel, drawn with the shared modules wcmods installs (docs/SDK.md, "Overlays"). Written from
 -- quest.json by the mod's section.py: change that and install again rather than editing this.
 local Draw = require("WCModsDraw")

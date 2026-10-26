@@ -1,6 +1,8 @@
 {
   "name": "Double XP",
   "description": "Doubles the experience every combat gives (gameplay change).",
+  "version": "1.0",
+  "author": "wcmods",
   "enabled": false,
   "priority": 0
 }

@@ -1,6 +1,8 @@
 {
   "name": "Gemstone Eyes",
   "description": "Replaces the 20 standard iris colours with vivid jewel tones.",
+  "version": "1.0",
+  "author": "wcmods",
   "enabled": true,
   "priority": 0
 }

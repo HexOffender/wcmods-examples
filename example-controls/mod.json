@@ -1,6 +1,8 @@
 {
   "name": "Example Controls",
   "description": "Example remaps (Interact on F, Scent tracking on Tab...). Use the Controls page or copy this into your own mod.",
+  "version": "1.0",
+  "author": "wcmods",
   "enabled": false,
   "priority": 0
 }

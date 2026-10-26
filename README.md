@@ -12,32 +12,73 @@ in-game mod menu. These are separate mods: use them as they are, or start your o
 - **Command line:** `python wcmods.py add path/to/wcmods-examples/palette-dark-forest`, one folder
   at a time.
 
-The ones that run code (Game Tweaks, Faster Movement, Quest Markers, Mistwhisker and The Moonlit Path)
-stay off until you allow mods that run code (Options, on the Mods page). Moonlit Herbs, Mistwhisker and The Moonlit Path
-need a wcmods from October 2026 or later (`items.json`, and `Game.npcs` for cats of a mod's own). Most others need UE4SS, which the studio's "Get set
-up" installs.
+The ones that run code (Game Tweaks, Faster Movement, Quest Markers, Mistwhisker and The Moonlit
+Path) stay off until you allow mods that run code (Options, on the Mods page). Moonlit Herbs,
+Mistwhisker and The Moonlit Path need a wcmods from October 2026 or later (`items.json`, and
+`Game.npcs` for cats of a mod's own). Most others need UE4SS, which the studio's "Get set up"
+installs.
 
 ## The examples
 
+Each folder is one mod: its `mod.json`, and the files for its kind of change. How each kind of file
+works is in wcmods' [README](https://github.com/HexOffender/warrior-cats-mods#file-formats) and
+[docs/SDK.md](https://github.com/HexOffender/warrior-cats-mods/blob/main/docs/SDK.md).
+
+### Looks (`palette.json`)
+
+Ten themed palettes recolour coats, patterns, markings and eyes; pick one theme at a time. The eye
+and coat mods go on top of a theme.
+
 | Folder | What it does |
 |---|---|
-| `palette-thunderclan-forest`, `palette-riverclan-waters`, `palette-shadowclan-night`, `palette-windclan-moor`, `palette-skyclan-sunset`, `palette-starclan-silverpelt`, `palette-dark-forest`, `palette-leaf-bare-frost`, `palette-pastel-kits`, `palette-vivid-clans` | Ten themed palettes: coats, patterns, markings and eyes. Pick one theme at a time |
-| `gemstone-eyes`, `starclan-glow-eyes` | New iris colours, on top of a theme |
+| `palette-thunderclan-forest` | Warm gingers and rich browns, moss and bracken extras, amber and leaf-green eyes |
+| `palette-riverclan-waters` | Silvery, cool coats with river-blue greys, reed and kingfisher extras, teal and blue eyes |
+| `palette-shadowclan-night` | Darker, smoky coats, marsh and nightshade extras, glowing yellow-green eyes |
+| `palette-windclan-moor` | Sandy, weathered coats, heather and gorse extras, pale gold and hazel eyes |
+| `palette-skyclan-sunset` | Glowing oranges and roses, sunset and twilight extras, fiery eyes |
+| `palette-starclan-silverpelt` | Pale, frosted coats with a silver-blue sheen, starlight extras, eyes that glow from the pupil out |
+| `palette-dark-forest` | Dim, ashen coats, rot and bone extras, blood-red and sickly eyes |
+| `palette-leaf-bare-frost` | Wintry, icy coats, snow and holly extras, ice-blue eyes |
+| `palette-pastel-kits` | Soft pastel coats and eyes, mint, lavender and blush extras |
+| `palette-vivid-clans` | Saturated, storybook colours: bold coats, bright extras, vivid eyes |
+| `gemstone-eyes` | The 20 standard iris colours as vivid jewel tones |
+| `starclan-glow-eyes` | Pale, luminous two-tone irises, a gradient example. Enable it instead of Gemstone Eyes, or give it a higher priority |
 | `richer-coats` | Deeper versions of the 15 natural coat colours |
-| `mouse-look` | Turn and tilt the camera with the mouse while exploring; F6 switches it off and on |
+
+### Controls and camera (`controls.json`, `mouselook.json`)
+
+| Folder | What it does |
+|---|---|
 | `example-controls` | Example key remaps (Interact on F, Scent tracking on Tab...) |
+| `mouse-look` | Turn and tilt the camera with the mouse while exploring; F6 switches it off and on |
+
+### Game data (`data.json` cell edits)
+
+| Folder | What it does |
+|---|---|
 | `double-xp` | Doubles the experience every fight gives |
-| `npc-size-variety` | A wider size range for newly generated Clan cats (`data.json` cell edits) |
-| `moonlit-herbs` | New items (`items.json`): a Moon Herb and a Starlight Pouch to barter for at the medicine cat, made with a new material, Moonstone, which the Moss Patch accessory now takes too, and a Moonlit Collar, a new look for the Dog Collar. Their icons and the collar's look are the game's own recoloured at install. Needs the Oodle DLL and a wcmods with `items.json` |
-| `game-tweaks` | An in-game script with live settings on its page in the mod menu: full stamina, hold the time of day, keep the fresh-kill pile up, heal on a key |
-| `faster-run` | A mod with its own build step (`section.py`) and studio page (`studio/section.js`) |
-| `quest-markers` | A custom quest drawn on screen, markers on nearby pickups and a debug panel |
+| `npc-size-variety` | A wider size range for newly generated Clan cats |
+
+### New items (`items.json`)
+
+| Folder | What it does |
+|---|---|
+| `moonlit-herbs` | A Moon Herb and a Starlight Pouch to barter for at the medicine cat, made with a new material, Moonstone, which the Moss Patch accessory now takes too, and a Moonlit Collar, a new look for the Dog Collar. Their icons and the collar's look are the game's own recoloured at install. Needs the Oodle DLL |
+
+### In-game scripts (`scripts/main.lua`, with `settings.json`)
+
+| Folder | What it does |
+|---|---|
+| `game-tweaks` | Live settings on its page in the mod menu: full stamina, hold the time of day, keep the fresh-kill pile up, heal on a key |
 | `custom-npc` | Mistwhisker, a cat of your own: their own colours, a name over their head and lines to say when you talk to them (T, or up on the d-pad). The first time, they turn up beside you; F8 moves them |
 | `moonlit-path` | A questline: Brindlemoon asks you to gather moss, visit your Clan's medicine cat and come back, for a reward. Steps on screen, a marker to follow, progress kept between sessions and a page in the mod menu |
 
-How each kind of file works is in wcmods'
-[README](https://github.com/HexOffender/warrior-cats-mods#file-formats) and
-[docs/SDK.md](https://github.com/HexOffender/warrior-cats-mods/blob/main/docs/SDK.md).
+### Build steps (`section.py`)
+
+| Folder | What it does |
+|---|---|
+| `faster-run` | Scales walking and running speed, from its own build step and a studio page (`studio/section.js`) |
+| `quest-markers` | A custom quest drawn on screen, markers on nearby pickups and a debug panel, from a UE4SS script the build step ships |
 
 ## Game updates
 

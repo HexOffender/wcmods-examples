@@ -1,6 +1,8 @@
 {
   "name": "StarClan Glow Eyes",
   "description": "Pale, luminous two-tone irises (gradient example). Enable instead of Gemstone Eyes, or give it a higher priority.",
+  "version": "1.0",
+  "author": "wcmods",
   "enabled": false,
   "priority": 10
 }
