@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Where wcmods is: the folder with wcmods.py, whose cache/ holds UE4SS's source and the UE4SS build this mod links.
+
+  Set WCModsRoot below, or leave it empty and let the three guesses under it find wcmods: this mod sitting in
+  wcmods' mods/ folder (two folders up), a warrior-cats-mods checkout beside this folder, or one beside the folder
+  this one is in (this template in a wcmods-examples checkout, with warrior-cats-mods checked out next to that). To
+  keep your own path out of the shared file, put the same PropertyGroup in a wcmods.local.props beside this one
+  (git ignores it).
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Your wcmods folder, e.g. <WCModsRoot>C:\Users\you\Documents\warrior-cats-mods</WCModsRoot> -->
+    <WCModsRoot></WCModsRoot>
+    <WCModsRoot Condition="'$(WCModsRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\..\wcmods.py')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..'))</WCModsRoot>
+    <WCModsRoot Condition="'$(WCModsRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\warrior-cats-mods\wcmods.py')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\warrior-cats-mods'))</WCModsRoot>
+    <WCModsRoot Condition="'$(WCModsRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\..\warrior-cats-mods\wcmods.py')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\warrior-cats-mods'))</WCModsRoot>
+  </PropertyGroup>
+</Project>

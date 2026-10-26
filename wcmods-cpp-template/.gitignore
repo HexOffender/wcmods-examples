@@ -1,0 +1,13 @@
+# What a build makes: Visual Studio's files, and the built mod. Take the dlls/ line out to ship the built
+# DLL (and its build.json) with the source, for players who won't build it.
+build/
+.vs/
+dlls/
+*.vcxproj.user
+
+# Written on each computer by tools/sync_ue4ss_props.py from wcmods' UE4SS build: it names that computer's UE4SS
+# version and compiler, so it isn't shared. Run the script before the first build (README.md, Making your mod, step 3).
+UE4SS.props
+
+# Your own wcmods folder, when wcmods.props' guesses don't fit (see wcmods.props)
+wcmods.local.props

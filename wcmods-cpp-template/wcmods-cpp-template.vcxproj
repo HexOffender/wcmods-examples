@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The template C++ mod as a Visual Studio project. It compiles cpp/src/*.cpp against UE4SS's headers and links the
+  UE4SS that wcmods built (`python wcmods.py cpp setup`, then `cpp build` once), into dlls/main.dll, with a
+  dlls/build.json naming the UE4SS it was built for, as `cpp build` writes. The same mod builds through
+  cpp/CMakeLists.txt too; README.md says how the pieces fit.
+
+  wcmods.props says where wcmods is. UE4SS.props, which tools/sync_ue4ss_props.py writes from wcmods' build (run it
+  once before the first build; git ignores the file, as it names your UE4SS version and compiler), holds UE4SS's
+  include folders, defines and libraries, and the compiler version that built them (UE4SS's libraries are
+  whole-program optimised, so the mod has to link with that very version).
+
+  Both configurations link UE4SS's Game__Shipping__Win64 build, the one the game's UE4SS is. Release builds the mod
+  the way `cpp build` does; Debug only turns optimisation off for this mod's own code, to step through it.
+-->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{69E94B25-3888-4B39-ABD6-47DE0D704776}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>wcmodscpptemplate</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <!-- The 64-bit compiler, as wcmods' build uses (the same code; it just has room for UE4SS's headers). -->
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="wcmods.props" />
+  <Import Project="wcmods.local.props" Condition="Exists('wcmods.local.props')" />
+  <!-- Written by the sync script; until then the project loads without it, and the build below says to run it. -->
+  <Import Project="UE4SS.props" Condition="Exists('$(MSBuildProjectDirectory)\UE4SS.props')" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <!-- The compiler that built UE4SS (UE4SS.props), else this Visual Studio's newest. -->
+    <PlatformToolset Condition="'$(UE4SSPlatformToolset)' != ''">$(UE4SSPlatformToolset)</PlatformToolset>
+    <PlatformToolset Condition="'$(UE4SSPlatformToolset)' == ''">$(DefaultPlatformToolset)</PlatformToolset>
+    <VCToolsVersion Condition="'$(UE4SSToolsVersion)' != ''">$(UE4SSToolsVersion)</VCToolsVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <!-- Each configuration builds in its own folder under build/ (the DLL with its symbols beside it), and the DLL
+         is then copied to dlls/, where wcmods looks for it: switching configurations puts that one's DLL there. -->
+    <OutDir>$(MSBuildProjectDirectory)\build\$(Configuration)\</OutDir>
+    <IntDir>$(MSBuildProjectDirectory)\build\$(Configuration)\obj\</IntDir>
+    <TargetName>main</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+    <WCModsDlls>$(MSBuildProjectDirectory)\dlls\</WCModsDlls>
+    <!-- Third-party headers UE4SS brings (fmt, glaze, PolyHook, ImGui...): no warnings from them. -->
+    <ExternalIncludePath>$(UE4SSExternalIncludeDirs);$(ExternalIncludePath)</ExternalIncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\cpp\src;$(UE4SSIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(UE4SSDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4005;4251;4068;4201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/utf-8 /Zc:inline /Zc:strictStrings /Zc:lambda %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalDependencies>$(UE4SSLibraries);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <!-- Still the release runtime and no runtime checks: UE4SS's libraries are built that way. -->
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <!-- The mod's sources: a new .cpp goes here and in cpp/CMakeLists.txt. -->
+    <ClCompile Include="cpp\src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp\CMakeLists.txt" />
+    <None Include="mod.json" />
+    <None Include="settings.json" />
+    <None Include="wcmods.props" />
+    <None Include="UE4SS.props" Condition="Exists('$(MSBuildProjectDirectory)\UE4SS.props')" />
+    <None Include="tools\sync_ue4ss_props.py" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+
+  <!-- Before compiling: is wcmods where wcmods.props says, has the sync script written UE4SS.props (and has this
+       Visual Studio read it: it reads the project's imports as it loads the solution), and is UE4SS built? Each
+       says what to do. -->
+  <Target Name="WCModsCheck" BeforeTargets="ClCompile">
+    <Error Condition="'$(WCModsRoot)' == '' Or !Exists('$(WCModsRoot)\wcmods.py')"
+           Text="wcmods isn't at '$(WCModsRoot)' (no wcmods.py there). Put your wcmods folder in wcmods.props as WCModsRoot, or in a wcmods.local.props beside it. README.md has the steps." />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\UE4SS.props')"
+           Text="UE4SS.props isn't here yet. In $(MSBuildProjectDirectory) run `python tools\sync_ue4ss_props.py`: it writes UE4SS.props from wcmods' UE4SS build (in $(WCModsRoot), `python wcmods.py cpp setup` and then `python wcmods.py cpp build tests/cpp-sdk`, once, make that build). Then reopen the solution, if it was open: Visual Studio reads the project's imports as it loads it. README.md has the steps." />
+    <Error Condition="'$(UE4SSLibDir)' == '' And Exists('$(MSBuildProjectDirectory)\UE4SS.props')"
+           Text="UE4SS.props is here, but this build didn't read it: it was written after the solution was opened. Close and reopen the solution; Visual Studio reads the project's imports as it loads it." />
+    <Error Condition="!Exists('$(UE4SSLibDir)\UE4SS.lib')"
+           Text="UE4SS isn't built in $(WCModsRoot)\cache\cpp\out yet. In $(WCModsRoot) run `python wcmods.py cpp setup`, then `python wcmods.py cpp build tests/cpp-sdk` (or any C++ mod), then `python tools\sync_ue4ss_props.py` here. README.md has the steps." />
+  </Target>
+
+  <!-- After linking: the DLL goes to dlls/, with a dlls/build.json naming the UE4SS it was built for. An install
+       checks that against the game's UE4SS and leaves out a DLL built for another, as a mismatch can crash the
+       game. This runs on every build, so a configuration that was already linked still lands in dlls/. -->
+  <Target Name="WCModsDeploy" AfterTargets="Link">
+    <PropertyGroup>
+      <_WCModsBuilt>$([System.DateTime]::Now.ToString("yyyy-MM-ddTHH:mm:ss"))</_WCModsBuilt>
+      <_WCModsCommit Condition="'$(UE4SSCommit)' != ''">$(UE4SSCommit.Substring(0, 8))</_WCModsCommit>
+      <_WCModsCommit Condition="'$(UE4SSCommit)' == ''">an unknown UE4SS (no commit in UE4SS.props)</_WCModsCommit>
+    </PropertyGroup>
+    <ItemGroup>
+      <_WCModsBuildInfo Remove="@(_WCModsBuildInfo)" />
+      <_WCModsBuildInfo Include="{" />
+      <_WCModsBuildInfo Include="  &quot;ue4ss&quot;: &quot;$(UE4SSCommit)&quot;," />
+      <_WCModsBuildInfo Include="  &quot;config&quot;: &quot;$(UE4SSConfig)&quot;," />
+      <_WCModsBuildInfo Include="  &quot;built&quot;: &quot;$(_WCModsBuilt)&quot;," />
+      <_WCModsBuildInfo Include="  &quot;builder&quot;: &quot;Visual Studio, $(Configuration) ($(MSBuildProjectName).vcxproj)&quot;" />
+      <_WCModsBuildInfo Include="}" />
+    </ItemGroup>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(WCModsDlls)" SkipUnchangedFiles="true" />
+    <WriteLinesToFile File="$(WCModsDlls)build.json" Lines="@(_WCModsBuildInfo)" Overwrite="true" Condition="'$(UE4SSCommit)' != ''" />
+    <Delete Files="$(WCModsDlls)build.json" Condition="'$(UE4SSCommit)' == ''" />
+    <Message Importance="high" Text="$(MSBuildProjectName): dlls\main.dll is the $(Configuration) build, for UE4SS $(_WCModsCommit). Put it in the game with wcmods: README.md." />
+  </Target>
+
+  <!-- Clean takes the copied DLL and its build.json out too. -->
+  <Target Name="WCModsClean" AfterTargets="Clean">
+    <Delete Files="$(WCModsDlls)main.dll;$(WCModsDlls)build.json" />
+  </Target>
+</Project>

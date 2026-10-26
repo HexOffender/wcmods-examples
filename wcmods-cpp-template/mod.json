@@ -1,0 +1,7 @@
+{
+  "name": "C++ Mod Template",
+  "description": "A starting point for a C++ mod, with a Visual Studio solution: keeps your cat's stamina full while its setting is on, heals it on F7, and has a page in the mod menu. Needs UE4SS and code mods allowed.",
+  "version": "1.0",
+  "author": "your name",
+  "enabled": true
+}
