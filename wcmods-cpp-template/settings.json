@@ -1,0 +1,4 @@
+{
+  "_help": "This mod's settings. wcmods::settings() in cpp/src/main.cpp reads them as the game starts, and wcmods::save_settings() writes them back here; the mod's page in the mod menu changes them while you play.",
+  "full_stamina": true
+}

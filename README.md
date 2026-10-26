@@ -12,11 +12,12 @@ in-game mod menu. These are separate mods: use them as they are, or start your o
 - **Command line:** `python wcmods.py add path/to/wcmods-examples/palette-dark-forest`, one folder
   at a time.
 
-The ones that run code (Game Tweaks, Faster Movement, Quest Markers, Mistwhisker and The Moonlit
-Path) stay off until you allow mods that run code (Options, on the Mods page). Moonlit Herbs,
-Mistwhisker and The Moonlit Path need a wcmods from October 2026 or later (`items.json`, and
-`Game.npcs` for cats of a mod's own). Most others need UE4SS, which the studio's "Get set up"
-installs.
+The ones that run code (Game Tweaks, Faster Movement, Quest Markers, Mistwhisker, The Moonlit Path
+and the C++ Mod Template) stay off until you allow mods that run code (Options, on the Mods page).
+Moonlit Herbs, Mistwhisker and The Moonlit Path need a wcmods from October 2026 or later
+(`items.json`, and `Game.npcs` for cats of a mod's own). Most others need UE4SS, which the studio's
+"Get set up" installs. The C++ Mod Template is source: it has to be built before it goes in the game
+(its README says how), so it's one to copy and start from rather than add as it is.
 
 ## The examples
 
@@ -80,6 +81,12 @@ and coat mods go on top of a theme.
 | `faster-run` | Scales walking and running speed, from its own build step and a studio page (`studio/section.js`) |
 | `quest-markers` | A custom quest drawn on screen, markers on nearby pickups and a debug panel, from a UE4SS script the build step ships |
 
+### C++ mods (`cpp/`, built into `dlls/main.dll`)
+
+| Folder | What it does |
+|---|---|
+| `wcmods-cpp-template` | A starting point for a C++ mod on wcmods' C++ SDK, with a Visual Studio solution that builds and debugs it the way wcmods' `cpp build` does: full stamina while its setting is on, heal on F7, a page in the mod menu. Copy the folder, name it after your mod, run its sync script once, and build. Needs wcmods' `cpp setup` and `cpp build` run once (Visual Studio, Rust, git); its README has the steps |
+
 ## Game updates
 
 A mod's `mod.json` can list the game builds it was made for (`"game_builds"`). These don't yet, so
@@ -89,7 +96,7 @@ updated here, or until you choose to use one anyway on that build.
 ## No game files
 
 These mods change the game only through wcmods' own formats: palettes, `data.json` cell edits,
-`items.json`, controls and scripts. None of them contains the game's files or code.
+`items.json`, controls, scripts, and C++ on wcmods' SDK. None of them contains the game's files or code.
 
 The palettes are generated from the game's colours by `tools/make_palettes.py` in wcmods, run on a
 computer with the game:
