@@ -12,6 +12,24 @@ DEFAULTS = {"title": "Custom quest", "steps": [], "pickups": True, "pickup_range
             "toggle_key": "F7", "waypoint_key": "F9"}
 
 
+def _number(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _like(v, default):
+    """Whether v has the type of a DEFAULTS value (the script compares and concatenates them unchecked)."""
+    if isinstance(default, bool):
+        return isinstance(v, bool)
+    if isinstance(default, (int, float)):
+        return _number(v)
+    return isinstance(v, type(default))
+
+
+def _kind(default):
+    return ("true or false" if isinstance(default, bool) else "a number" if isinstance(default, (int, float))
+            else "a list" if isinstance(default, list) else "text")
+
+
 class QuestMarkers(Section):
     id = "quest-markers"
     title = "Quest markers"
@@ -22,11 +40,16 @@ class QuestMarkers(Section):
         unknown = sorted(set(data) - set(DEFAULTS))
         if unknown:
             raise ValueError(f"quest.json: unknown setting(s) {', '.join(unknown)} (known: {', '.join(DEFAULTS)})")
+        for key, default in DEFAULTS.items():
+            if key in data and not _like(data[key], default):
+                raise ValueError(f'quest.json: "{key}" should be {_kind(default)}')
         for i, step in enumerate(data.get("steps", []), 1):
             at = step.get("at") if isinstance(step, dict) else None
             if not (isinstance(step, dict) and isinstance(step.get("text"), str) and isinstance(at, list)
-                    and len(at) == 3 and all(isinstance(v, (int, float)) for v in at)):
+                    and len(at) == 3 and all(_number(v) for v in at)):
                 raise ValueError(f'quest.json: step {i} needs "text" and "at": [x, y, z]')
+            if "radius" in step and not (_number(step["radius"]) and step["radius"] > 0):
+                raise ValueError(f'quest.json: step {i}: "radius" should be a distance in cm, like 400')
         return {**DEFAULTS, **data}
 
     def build(self, ctx, items):

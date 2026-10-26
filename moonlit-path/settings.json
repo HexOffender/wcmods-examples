@@ -1,5 +1,5 @@
 {
-  "_help": "A questline (scripts/main.lua). The giver is a cat of the mod's own (Game.npcs): empty 'at', they turn up beside you the first time. Steps, in order: 'talk' (lines the giver says), 'collect' (items to pick up from then on, by tag), 'visit' (an actor class to go to, e.g. the medicine cat, or 'at': [x, y, z]). The last step's 'reward' is dropped at your paws. 'progress' is where you are; the quest's page in the mod menu can start it over.",
+  "_help": "A questline (scripts/main.lua). The giver is a cat of the mod's own (Game.npcs): empty 'at', they turn up beside you the first time. Steps, in order: 'talk' (lines the giver says), 'collect' (items to pick up from then on, by tag), 'visit' (an actor class to go to, the nearest one, e.g. the medicine cat, or 'at': [x, y, z]). The last step's 'reward' is dropped at your paws. 'progress' is where you are; the quest's page in the mod menu can start it over.",
   "title": "The Moonlit Path",
   "giver": {
     "name": "Brindlemoon",

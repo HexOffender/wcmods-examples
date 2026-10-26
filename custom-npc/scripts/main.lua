@@ -53,7 +53,7 @@ end)
 -- game's own Interact (E), which would also open whatever else is in reach. Game.onPress reads the
 -- game's own input, so it sees the controller too, and only while the game has the focus.
 Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function()
-    if not npc then return end
+    if not npc or #Game.screens() > 0 then return end
     if talking then
         talking = talking + 1
         if talking > #S.lines then talking = nil end
@@ -64,9 +64,11 @@ Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function
         npc:face()
     end
 end, "Talk to " .. S.name)
--- Enter too, while talking: it's the key the game's dialogue box shows.
+-- Enter too, while talking: it's the key the game's dialogue box shows. It's also the game's own pause
+-- key, so a screen it opens only puts the talk away for a while (below), and the next line is there when
+-- the screen closes.
 Game.onPress("Enter", function()
-    if not talking then return end
+    if not talking or #Game.screens() > 0 then return end
     talking = talking + 1
     if talking > #S.lines then talking = nil end
 end)
@@ -103,10 +105,11 @@ end
 
 Draw.onFrame(function(d)
     if not npc or not npc:valid() or not d.view then talking = nil speak(nil) return end
-    if #Game.screens() > 0 then talking = nil speak(nil) return end   -- the map, the inventory, the pause menu
+    if #Game.screens() > 0 then speak(nil) return end   -- the map, the inventory, the pause menu: the talk waits
     local away = npc:distance()
     if not away then return end
-    if talking and away > WALK_AWAY then talking = nil end
+    -- Walking off ends the talk; so does another mod's cat having taken the box while a screen was up.
+    if talking and (away > WALK_AWAY or otherTalking()) then talking = nil end
 
     -- The name over their head, as the game shows its own cats'.
     if away <= LABEL_RANGE then

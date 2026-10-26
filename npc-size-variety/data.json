@@ -1,9 +1,9 @@
 {
-  "_help": "Each role's size range for newly generated cats, wider than the game's own so cats vary more.",
+  "_help": "Each role's size range for newly generated cats, wider than the game's own so cats vary more. The rows are CatSize.csv's roles: 1 kit, 2 apprentice, 3 elder, 4 warrior, 5 medicine cat, 6 queen, 7 deputy, 8 leader, 9 StarClan ancestor, 10 rogue, 11 rogue leader.",
   "NPC/CatSize.csv": {
     "1": {
-      "MinScale": "0.1",
-      "MaxScale": "0.15"
+      "MinScale": "0.08",
+      "MaxScale": "0.17"
     },
     "2": {
       "MinScale": "0.38",
@@ -30,7 +30,7 @@
       "MaxScale": "0.88"
     },
     "8": {
-      "MinScale": "0.9",
+      "MinScale": "0.85",
       "MaxScale": "1"
     },
     "9": {
@@ -42,7 +42,7 @@
       "MaxScale": "0.9"
     },
     "11": {
-      "MinScale": "0.9",
+      "MinScale": "0.85",
       "MaxScale": "1"
     }
   }

@@ -3,6 +3,7 @@
 -- quest.json by the mod's section.py: change that and install again rather than editing this.
 local Draw = require("WCModsDraw")
 local World = require("WCModsWorld")
+local Game = require("WCModsGame")
 local SETTINGS = @SETTINGS@
 
 local function log(fmt, ...) print(string.format("[QuestMarkers] " .. fmt .. "\n", ...)) end
@@ -21,6 +22,17 @@ local function nearbyPickups()
     return pickups
 end
 
+-- The step is done when your cat reaches its place. On a timer rather than in the painter, so the quest
+-- goes on while the overlay is hidden (toggle_key).
+Game.every(0.25, function()
+    local me, s = World.player(), steps[step]
+    if not me or not s then return end
+    if World.distance(me, place(s)) <= (s.radius or 400) then
+        log("step %d done: %s", step, s.text)
+        step = step + 1
+    end
+end)
+
 Draw.onFrame(function(d)
     local me = World.player()
     if not me or not d.view then return end
@@ -36,10 +48,6 @@ Draw.onFrame(function(d)
         d.text(x + 12, y, string.format("%d/%d  %s", step, #steps, s.text), { size = 15, color = "#ffe9a8" })
         d.text(x + 12, y + 22, string.format("%d m away", math.floor(away / 100 + 0.5)), { size = 13, color = "#ffffffb0" })
         d.marker(target, s.text, { edge = true, color = "#ffd166" })
-        if away <= (s.radius or 400) then
-            log("step %d done: %s", step, s.text)
-            step = step + 1
-        end
     elseif #steps > 0 then
         d.text(x + 12, y, "Quest complete!", { size = 15, color = "#9ef0a0" })
     else
@@ -58,7 +66,7 @@ Draw.onFrame(function(d)
         local py = d.panel(20, 20, 320, 116, "Debug")
         d.text(32, py, string.format("You: %.0f, %.0f, %.0f", here.X, here.Y, here.Z), { size = 13 })
         d.text(32, py + 20, string.format("Camera: pitch %.0f, yaw %.0f, fov %.0f", r.Pitch, r.Yaw, d.view.fov), { size = 13 })
-        d.text(32, py + 40, string.format("Pickups within %.0f m: %d", SETTINGS.pickup_range / 100, #pickups), { size = 13 })
+        d.text(32, py + 40, string.format("Pickups within %.0f m: %d", SETTINGS.pickup_range / 100, #nearbyPickups()), { size = 13 })
         d.text(32, py + 60, string.format("Viewport %.0f x %.0f, UI scale %.2f", d.width, d.height, d.scale), { size = 13 })
     end
 end)

@@ -53,7 +53,6 @@ local function placeGiver()
     G.at = { math.floor(at.X), math.floor(at.Y), math.floor(at.Z) }
     G.level, G.yaw = Game.levelName(), yaw
     if giver and giver.level == G.level then
-        giver.yaw = yaw
         giver:moveTo(G.at)
         giver:face()
     else
@@ -83,23 +82,36 @@ Game.on("itemPickedUp", function(tag, quantity)
     advance()
 end)
 
--- Visiting: an actor of a class (found while you play) or a place.
-local found = {}
-local function visitTarget(s)
-    if s.at then return { X = s.at[1], Y = s.at[2], Z = s.at[3] } end
-    if not s.visit then return nil end
-    local a = found[s.visit]
-    if not (a and a:IsValid()) then
-        a = Game.find(s.visit)
-        found[s.visit] = a
-    end
-    if not a then return nil end
+local function distance(a, b)
+    return math.sqrt((a.X - b.X) ^ 2 + (a.Y - b.Y) ^ 2 + (a.Z - b.Z) ^ 2)
+end
+
+local function actorAt(a)
     local ok, l = pcall(function() return a:K2_GetActorLocation() end)
     return ok and { X = l.X, Y = l.Y, Z = l.Z } or nil
 end
 
-local function distance(a, b)
-    return math.sqrt((a.X - b.X) ^ 2 + (a.Y - b.Y) ^ 2 + (a.Z - b.Z) ^ 2)
+-- Visiting: a place, or the nearest actor of a class (the game has a medicine cat in every camp, and the
+-- first one it finds could be another Clan's). Looked up again every few seconds, as the game loads and
+-- unloads them.
+local found = {}   -- class -> { actor, at = when it was chosen }
+local function visitTarget(s)
+    if s.at then return { X = s.at[1], Y = s.at[2], Z = s.at[3] } end
+    if not s.visit then return nil end
+    local me = Game.cat()
+    local here = me and me:location()
+    local f = found[s.visit]
+    if here and not (f and Game.valid(f.actor) and os.clock() - f.at < 5) then
+        local best, bestAway
+        for _, a in ipairs(Game.findAll(s.visit)) do
+            local l = actorAt(a)
+            local away = l and distance(here, l)
+            if away and (not bestAway or away < bestAway) then best, bestAway = a, away end
+        end
+        f = best and { actor = best, at = os.clock() } or nil
+        found[s.visit] = f
+    end
+    return f and Game.valid(f.actor) and actorAt(f.actor) or nil
 end
 
 Game.every(0.5, function()
@@ -113,6 +125,7 @@ end)
 -- they remind you what's next. Once the quest is done, the same key away from the giver puts the
 -- quest panel away for good (Start over brings it back).
 Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function()
+    if #Game.screens() > 0 then return end
     if finished() and not P.dismissed and not talking and not (giver and giver:near(TALK_RANGE)) then
         P.dismissed = true
         save()
@@ -136,9 +149,11 @@ Game.onPress({ S.talk_key or "T", S.talk_button or "Gamepad_DPad_Up" }, function
     end
 end, "Talk to " .. G.name)
 
--- Enter too, while talking: it's the key the game's dialogue box shows.
+-- Enter too, while talking: it's the key the game's dialogue box shows. It's also the game's own pause
+-- key, so a screen it opens only puts the talk away for a while (below), and the next line is there when
+-- the screen closes.
 Game.onPress("Enter", function()
-    if not talking then return end
+    if not talking or #Game.screens() > 0 then return end
     talking = talking + 1
     if talking > #lines then
         talking = nil
@@ -197,10 +212,11 @@ report()
 
 Draw.onFrame(function(d)
     if not d.view or not Game.player() then speak(nil) return end
-    if #Game.screens() > 0 then talking = nil speak(nil) return end
+    if #Game.screens() > 0 then speak(nil) return end   -- the map, the inventory, the pause menu: the talk waits
     local s = step()
     local away = giver and giver:valid() and giver:distance()
-    if talking and (not away or away > WALK_AWAY) then talking = nil end
+    -- Walking off ends the talk; so does another mod's cat having taken the box while a screen was up.
+    if talking and (not away or away > WALK_AWAY or otherTalking()) then talking = nil end
 
     -- The giver's name over their head, and the talk prompt.
     if away and away <= LABEL_RANGE then
