@@ -37,8 +37,8 @@ wcmods gets and builds that for you, once:
    python wcmods.py cpp build tests/cpp-sdk
    ```
    `cpp setup` gets UE4SS's source at the game's version; the first `cpp build` compiles UE4SS (several
-   minutes, once). It builds the SDK's test mod, which this solution doesn't need; what it leaves in
-   `cache/cpp/out` (UE4SS's libraries) is what this solution links.
+   minutes, once). It builds the SDK's test mod: the sync script reads from that build what every mod gets,
+   and what it leaves in `cache/cpp/out` (UE4SS's libraries) is what this solution links.
 
 ## Making your mod
 
@@ -53,7 +53,8 @@ wcmods gets and builds that for you, once:
 3. **`python tools\sync_ue4ss_props.py`**, from the mod's folder, before the first build: writes
    `UE4SS.props` from wcmods' build (UE4SS's include folders, defines and libraries, and the compiler
    version that built it). Git ignores the file, since it names your UE4SS version and Visual Studio; the
-   solution won't build without it, and says so. Run the script again whenever `cpp setup` or `cpp build`
+   solution won't build without it, and says so. Visual Studio reads the file as it opens the solution, so
+   if the solution was open, close and reopen it. Run the script again whenever `cpp setup` or `cpp build`
    move UE4SS to another version, or a Visual Studio update rebuilds it.
 4. **Open the .sln**, pick **Release**, and build (Ctrl+Shift+B). It makes `dlls\main.dll` and
    `dlls\build.json`.
@@ -94,7 +95,8 @@ crash the game.
 **When something's off:**
 
 - *"wcmods isn't at ..."*: set `WCModsRoot` (step 2).
-- *"UE4SS.props isn't here yet"*: run the sync script (step 3).
+- *"UE4SS.props isn't here yet"*: run the sync script (step 3), then reopen the solution.
+- *"UE4SS.props is here, but this build didn't read it"*: close and reopen the solution.
 - *"UE4SS isn't built in ..."*: run `cpp setup` and `cpp build` in wcmods (What it needs, step 3), then the
   sync script.
 - *The toolset version isn't found*, or *C1047 (object created by a different compiler)*: Visual Studio
@@ -108,9 +110,10 @@ crash the game.
 ## Sharing it
 
 Zip the folder (Clan Mod Studio's "Save as .zip" on the mod, or `python wcmods.py pack <id>`) and give it
-out; players add the .zip in the studio. The build folders (`build\`, `.vs\`) are only on your computer:
-delete them first, or share from git, where `.gitignore` leaves them out, and `UE4SS.props` with them (each
-computer writes its own with the sync script). Players who don't build need the DLL: take `dlls/` out of
-`.gitignore` to ship `dlls\main.dll` and `dlls\build.json` with the source. A mod
-built here runs only with the UE4SS version it was built for, and players have the Visual C++ runtime for
-it from the Visual C++ Redistributable, which most do.
+out; players add the .zip in the studio. First take out what is yours alone, since a zip carries everything
+in the folder: the build folders (`build\`, `.vs\`), `UE4SS.props` (it pins your compiler version; each
+computer writes its own with the sync script) and a `wcmods.local.props`. Or share from git, where
+`.gitignore` leaves all of those out. Players who don't build need the DLL: take `dlls/` out of
+`.gitignore` to ship `dlls\main.dll` and `dlls\build.json` with the source. A mod built here runs only with
+the UE4SS version it was built for, and players have the Visual C++ runtime for it from the Visual C++
+Redistributable, which most do.

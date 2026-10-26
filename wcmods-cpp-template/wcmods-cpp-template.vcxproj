@@ -117,13 +117,16 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 
-  <!-- Before compiling: is wcmods where wcmods.props says, has the sync script written UE4SS.props, and is UE4SS
-       built? Each says what to do. -->
+  <!-- Before compiling: is wcmods where wcmods.props says, has the sync script written UE4SS.props (and has this
+       Visual Studio read it: it reads the project's imports as it loads the solution), and is UE4SS built? Each
+       says what to do. -->
   <Target Name="WCModsCheck" BeforeTargets="ClCompile">
     <Error Condition="'$(WCModsRoot)' == '' Or !Exists('$(WCModsRoot)\wcmods.py')"
            Text="wcmods isn't at '$(WCModsRoot)' (no wcmods.py there). Put your wcmods folder in wcmods.props as WCModsRoot, or in a wcmods.local.props beside it. README.md has the steps." />
     <Error Condition="!Exists('$(MSBuildProjectDirectory)\UE4SS.props')"
-           Text="UE4SS.props isn't here yet. In $(MSBuildProjectDirectory) run `python tools\sync_ue4ss_props.py`: it writes UE4SS.props from wcmods' UE4SS build (in $(WCModsRoot), `python wcmods.py cpp setup` and then `python wcmods.py cpp build tests/cpp-sdk`, once, make that build). README.md has the steps." />
+           Text="UE4SS.props isn't here yet. In $(MSBuildProjectDirectory) run `python tools\sync_ue4ss_props.py`: it writes UE4SS.props from wcmods' UE4SS build (in $(WCModsRoot), `python wcmods.py cpp setup` and then `python wcmods.py cpp build tests/cpp-sdk`, once, make that build). Then reopen the solution, if it was open: Visual Studio reads the project's imports as it loads it. README.md has the steps." />
+    <Error Condition="'$(UE4SSLibDir)' == '' And Exists('$(MSBuildProjectDirectory)\UE4SS.props')"
+           Text="UE4SS.props is here, but this build didn't read it: it was written after the solution was opened. Close and reopen the solution; Visual Studio reads the project's imports as it loads it." />
     <Error Condition="!Exists('$(UE4SSLibDir)\UE4SS.lib')"
            Text="UE4SS isn't built in $(WCModsRoot)\cache\cpp\out yet. In $(WCModsRoot) run `python wcmods.py cpp setup`, then `python wcmods.py cpp build tests/cpp-sdk` (or any C++ mod), then `python tools\sync_ue4ss_props.py` here. README.md has the steps." />
   </Target>
