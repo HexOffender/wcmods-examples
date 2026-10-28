@@ -27,24 +27,28 @@ works is in wcmods' [README](https://github.com/HexOffender/warrior-cats-mods#fi
 
 ### Looks (`palette.json`)
 
-Ten themed palettes recolour coats, patterns, markings and eyes; pick one theme at a time. The eye
-and coat mods go on top of a theme.
+Ten themed palettes. Each recolours the game's coats and eyes, a whole-game restyle (pick one theme at
+a time for those; the eye and coat mods go on top of a theme), and adds its 25 pattern and 25 marking
+colours as new colours, each theme in slots of its own, so every theme can be on at once and all of
+them are new choices. With the [Creator palettes](https://github.com/HexOffender/wcmods-creator-palettes)
+mod they're in the cat maker's colour picker, a theme at a time; `cats.json` (Clan Mod Studio's Your
+cat page) gives them to any cat in your save.
 
-| Folder | What it does |
-|---|---|
-| `palette-thunderclan-forest` | Warm gingers and rich browns, moss and bracken extras, amber and leaf-green eyes |
-| `palette-riverclan-waters` | Silvery, cool coats with river-blue greys, reed and kingfisher extras, teal and blue eyes |
-| `palette-shadowclan-night` | Darker, smoky coats, marsh and nightshade extras, glowing yellow-green eyes |
-| `palette-windclan-moor` | Sandy, weathered coats, heather and gorse extras, pale gold and hazel eyes |
-| `palette-skyclan-sunset` | Glowing oranges and roses, sunset and twilight extras, fiery eyes |
-| `palette-starclan-silverpelt` | Pale, frosted coats with a silver-blue sheen, starlight extras, eyes that glow from the pupil out |
-| `palette-dark-forest` | Dim, ashen coats, rot and bone extras, blood-red and sickly eyes |
-| `palette-leaf-bare-frost` | Wintry, icy coats, snow and holly extras, ice-blue eyes |
-| `palette-pastel-kits` | Soft pastel coats and eyes, mint, lavender and blush extras |
-| `palette-vivid-clans` | Saturated, storybook colours: bold coats, bright extras, vivid eyes |
-| `gemstone-eyes` | The 20 standard iris colours as vivid jewel tones |
-| `starclan-glow-eyes` | Pale, luminous two-tone irises, a gradient example. Enable it instead of Gemstone Eyes, or give it a higher priority |
-| `richer-coats` | Deeper versions of the 15 natural coat colours |
+| Folder | What it does | New pattern and marking slots |
+|---|---|---|
+| `palette-thunderclan-forest` | Warm gingers and rich browns, moss and bracken extras, amber and leaf-green eyes | 100-124 |
+| `palette-riverclan-waters` | Silvery, cool coats with river-blue greys, reed and kingfisher extras, teal and blue eyes | 125-149 |
+| `palette-shadowclan-night` | Darker, smoky coats, marsh and nightshade extras, glowing yellow-green eyes | 150-174 |
+| `palette-windclan-moor` | Sandy, weathered coats, heather and gorse extras, pale gold and hazel eyes | 175-199 |
+| `palette-skyclan-sunset` | Glowing oranges and roses, sunset and twilight extras, fiery eyes | 200-224 |
+| `palette-starclan-silverpelt` | Pale, frosted coats with a silver-blue sheen, starlight extras, eyes that glow from the pupil out | 225-249 |
+| `palette-dark-forest` | Dim, ashen coats, rot and bone extras, blood-red and sickly eyes | 250-274 |
+| `palette-leaf-bare-frost` | Wintry, icy coats, snow and holly extras, ice-blue eyes | 275-299 |
+| `palette-pastel-kits` | Soft pastel coats and eyes, mint, lavender and blush extras | 300-324 |
+| `palette-vivid-clans` | Saturated, storybook colours: bold coats, bright extras, vivid eyes | 325-349 |
+| `gemstone-eyes` | The 20 standard iris colours as vivid jewel tones | |
+| `starclan-glow-eyes` | Pale, luminous two-tone irises, a gradient example. Enable it instead of Gemstone Eyes, or give it a higher priority | |
+| `richer-coats` | Deeper versions of the 15 natural coat colours | |
 
 ### Controls and camera (`controls.json`, `mouselook.json`)
 
