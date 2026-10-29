@@ -28,13 +28,20 @@ works is in wcmods' [README](https://github.com/HexOffender/warrior-cats-mods#fi
 ### Looks (`palette.json`)
 
 Ten themed palettes. Each recolours the game's coats and eyes, a whole-game restyle (pick one theme at
-a time for those; the eye and coat mods go on top of a theme), and adds its 25 pattern and 25 marking
-colours as new colours, each theme in slots of its own, so every theme can be on at once and all of
-them are new choices. With the [Creator palettes](https://github.com/HexOffender/wcmods-creator-palettes)
-mod they're in the cat maker's colour picker, a theme at a time; `cats.json` (Clan Mod Studio's Your
-cat page) gives them to any cat in your save.
+a time for those; the eye and coat mods go on top of a theme), and adds 25 coat, 25 pattern and 25
+marking colours as new colours, each theme in slots of its own, so every theme can be on at once and
+all of them are new choices. With the [Creator palettes](https://github.com/HexOffender/wcmods-creator-palettes)
+mod they're in the cat maker's colour pickers, a theme at a time; `cats.json` (Clan Mod Studio's Your
+cat page) gives the pattern and marking ones to any cat in your save.
 
-| Folder | What it does | New pattern and marking slots |
+The new coat colours are 15 natural cat colours the game's coats haven't got (cream, apricot, lilac,
+blue, smoke...) in the theme's grade, then ten of the theme's own. The game can't take new coat slots,
+so each is a coat preset: Creator palettes 1.2 offers it in the cat maker's Fur picker and paints it on,
+and the save holds the game coat it looks most like, with that coat's paws, ears, nose and whiskers (so
+turning the palette off leaves the cat on that coat). The themed palettes need wcmods 0.6.0 or newer: an
+older one leaves them out, as it can't read coat colours past 24.
+
+| Folder | What it does | New coat, pattern and marking slots |
 |---|---|---|
 | `palette-thunderclan-forest` | Warm gingers and rich browns, moss and bracken extras, amber and leaf-green eyes | 100-124 |
 | `palette-riverclan-waters` | Silvery, cool coats with river-blue greys, reed and kingfisher extras, teal and blue eyes | 125-149 |
@@ -108,3 +115,5 @@ computer with the game:
 ```
 python tools/make_palettes.py --out ../wcmods-examples
 ```
+
+One from before wcmods 0.6.0 writes them without their new coat colours.
