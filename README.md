@@ -38,7 +38,7 @@ The new coat colours are 15 natural cat colours the game's coats haven't got (cr
 blue, smoke...) in the theme's grade, then ten of the theme's own. The game can't take new coat slots,
 so each is a coat preset: Creator palettes 1.2 offers it in the cat maker's Fur picker and paints it on,
 and the save holds the game coat it looks most like, with that coat's paws, ears, nose and whiskers (so
-turning the palette off leaves the cat on that coat). The themed palettes need wcmods 0.6.0 or newer: an
+turning the palette off leaves the cat on that coat). The themed palettes need wcmods 0.5.0 or newer: an
 older one leaves them out, as it can't read coat colours past 24.
 
 | Folder | What it does | New coat, pattern and marking slots |
@@ -116,4 +116,5 @@ computer with the game:
 python tools/make_palettes.py --out ../wcmods-examples
 ```
 
-One from before wcmods 0.6.0 writes them without their new coat colours.
+Its themes don't have the new coat colours yet (wcmods 0.5.0's writes them without), so regenerating
+drops them until it does.
